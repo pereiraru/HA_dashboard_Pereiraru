@@ -1,0 +1,10 @@
+# Car Card - Charge Port Door
+type: custom:button-card
+entity: cover.ze_das_pilhas_charge_port_door
+name: Porta de Carga
+icon: mdi:ev-plug-tesla
+template: cover_card
+tap_action:
+  action: more-info
+view_layout:
+  grid-column: span 2

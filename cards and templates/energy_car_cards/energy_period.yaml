@@ -1,0 +1,30 @@
+# Energy Card - Current Tariff Period (Day/Night)
+type: custom:button-card
+entity: sensor.edp_periodo_atual
+name: Período Atual
+icon: |
+  [[[
+    if (entity.state == "daily") return "mdi:white-balance-sunny";
+    else return "mdi:weather-night";
+  ]]]
+template: info_card
+state_display: |
+  [[[
+    if (entity.state == "daily") return "Dia";
+    else return "Noite";
+  ]]]
+styles:
+  card:
+    - background: |
+        [[[
+          if (entity.state == "daily") return "var(--yellow)";
+          else return "var(--blue)";
+        ]]]
+  state:
+    - color: var(--black)
+  name:
+    - color: var(--black)
+  icon:
+    - color: var(--black)
+view_layout:
+  grid-column: span 2

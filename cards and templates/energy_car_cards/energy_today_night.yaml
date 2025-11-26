@@ -1,0 +1,21 @@
+# Energy Card - Night Consumption Today
+type: custom:button-card
+entity: sensor.edp_nightly_kwh
+name: Consumo Noite
+icon: mdi:weather-night
+template: info_card
+state_display: |
+  [[[
+    return parseFloat(entity.state).toFixed(2) + " kWh";
+  ]]]
+styles:
+  card:
+    - background: var(--blue)
+  state:
+    - color: var(--black)
+  name:
+    - color: var(--black)
+  icon:
+    - color: var(--black)
+view_layout:
+  grid-column: span 2

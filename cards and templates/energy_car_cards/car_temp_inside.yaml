@@ -1,0 +1,12 @@
+# Car Card - Inside Temperature
+type: custom:button-card
+entity: sensor.ze_das_pilhas_inside_temperature
+name: Temp. Interior
+icon: mdi:thermometer
+template: info_card
+state_display: |
+  [[[
+    return parseFloat(entity.state).toFixed(1) + "°C";
+  ]]]
+view_layout:
+  grid-column: span 2

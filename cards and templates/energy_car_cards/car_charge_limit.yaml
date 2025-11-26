@@ -1,0 +1,14 @@
+# Car Card - Charge Limit Setting
+type: custom:button-card
+entity: number.ze_das_pilhas_charge_limit
+name: Limite de Carga
+icon: mdi:battery-arrow-up
+template: info_card
+tap_action:
+  action: more-info
+state_display: |
+  [[[
+    return entity.state + "%";
+  ]]]
+view_layout:
+  grid-column: span 2

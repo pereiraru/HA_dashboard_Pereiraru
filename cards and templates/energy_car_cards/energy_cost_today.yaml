@@ -1,0 +1,12 @@
+# Energy Card - Cost Today
+type: custom:button-card
+entity: sensor.edp_valor_diario_euros
+name: Custo Hoje
+icon: mdi:currency-eur
+template: info_card
+state_display: |
+  [[[
+    return parseFloat(entity.state).toFixed(2) + " €";
+  ]]]
+view_layout:
+  grid-column: span 2

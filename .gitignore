@@ -1,0 +1,107 @@
+# ==================================
+# Home Assistant Dashboard - .gitignore
+# ==================================
+
+# ============================================
+# SECRETS & SENSITIVE DATA - NEVER COMMIT!
+# ============================================
+secrets.yaml
+*.secret
+*.key
+*.pem
+*.crt
+ip_bans.yaml
+known_devices.yaml
+
+# SSH Credentials & Server Info
+context.md
+
+# ============================================
+# DATABASE FILES
+# ============================================
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+home-assistant_v2.db*
+
+# ============================================
+# HOME ASSISTANT INTERNAL FILES
+# ============================================
+.storage/
+.cloud/
+.google.token
+.uuid
+.HA_VERSION
+OZW_Log.txt
+
+# ============================================
+# LOGS
+# ============================================
+*.log
+*.log.*
+home-assistant.log*
+
+# ============================================
+# SYSTEM FILES
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ============================================
+# PYTHON
+# ============================================
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# ============================================
+# DEVELOPMENT & IDE
+# ============================================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# TEMPORARY FILES
+# ============================================
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+.cache/
+
+# ============================================
+# NODE MODULES (if using any frontend tools)
+# ============================================
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# ============================================
+# CUSTOM EXCLUSIONS
+# ============================================
+# Add any other files you don't want to share publicly
+test_modbus.py

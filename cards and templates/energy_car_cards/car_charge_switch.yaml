@@ -1,0 +1,8 @@
+# Car Card - Start/Stop Charging
+type: custom:button-card
+entity: switch.ze_das_pilhas_charge
+name: Iniciar/Parar Carga
+icon: mdi:ev-station
+template: switch_card
+view_layout:
+  grid-column: span 2

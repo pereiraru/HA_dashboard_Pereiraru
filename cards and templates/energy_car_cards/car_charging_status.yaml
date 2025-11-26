@@ -1,0 +1,46 @@
+# Car Card - Charging Status
+type: custom:button-card
+entity: sensor.ze_das_pilhas_charging
+name: Estado de Carga
+icon: |
+  [[[
+    if (entity.state == "Charging") return "mdi:battery-charging";
+    else if (entity.state == "Complete") return "mdi:battery";
+    else return "mdi:battery-off";
+  ]]]
+template: info_card
+state_display: |
+  [[[
+    if (entity.state == "Charging") return "A Carregar";
+    else if (entity.state == "Complete") return "Completo";
+    else if (entity.state == "Disconnected") return "Desligado";
+    else return entity.state;
+  ]]]
+styles:
+  card:
+    - background: |
+        [[[
+          if (entity.state == "Charging") return "var(--green)";
+          else if (entity.state == "Complete") return "var(--blue)";
+          else return "var(--contrast2)";
+        ]]]
+  state:
+    - color: |
+        [[[
+          if (entity.state == "Charging" || entity.state == "Complete") return "var(--black)";
+          else return "var(--contrast20)";
+        ]]]
+  name:
+    - color: |
+        [[[
+          if (entity.state == "Charging" || entity.state == "Complete") return "var(--black)";
+          else return "var(--contrast16)";
+        ]]]
+  icon:
+    - color: |
+        [[[
+          if (entity.state == "Charging" || entity.state == "Complete") return "var(--black)";
+          else return "var(--contrast20)";
+        ]]]
+view_layout:
+  grid-column: span 2

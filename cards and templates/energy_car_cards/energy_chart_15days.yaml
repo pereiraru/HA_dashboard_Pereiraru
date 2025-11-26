@@ -1,0 +1,49 @@
+# Energy Chart - Last 15 Days (Day vs Night)
+# Requires: custom:apexcharts-card (install via HACS)
+type: custom:apexcharts-card
+header:
+  show: true
+  title: 📈 Últimos 15 Dias (Dia vs Noite)
+  show_states: true
+  colorize_states: true
+graph_span: 15d
+now:
+  show: true
+  label: Hoje
+span:
+  start: day
+  offset: -14d
+stacked: true
+apex_config:
+  chart:
+    height: 280
+  plotOptions:
+    bar:
+      columnWidth: 70%
+  legend:
+    show: true
+    position: top
+  dataLabels:
+    enabled: true
+    formatter: "EVAL:function(value) { return value ? value.toFixed(2) + ' kWh' : ''; }"
+  xaxis:
+    type: datetime
+    labels:
+      format: dd/MM
+series:
+  - entity: sensor.um_diario_daily
+    name: ☀️ Dia
+    type: column
+    color: "#FFA726"
+    group_by:
+      func: last
+      duration: 1d
+  - entity: sensor.um_diario_nightly
+    name: 🌙 Noite
+    type: column
+    color: "#42A5F5"
+    group_by:
+      func: last
+      duration: 1d
+view_layout:
+  grid-column: 1 / -1

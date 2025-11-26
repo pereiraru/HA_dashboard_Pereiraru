@@ -1,0 +1,22 @@
+# Car Card - Wake Up Tesla Button
+type: custom:button-card
+entity: button.ze_das_pilhas_wake
+name: Despertar Tesla
+icon: mdi:sleep-off
+template: base_card
+tap_action:
+  action: call-service
+  service: button.press
+  service_data:
+    entity_id: button.ze_das_pilhas_wake
+  haptic: success
+styles:
+  card:
+    - height: 75px
+    - background: var(--purple)
+  icon:
+    - color: var(--black)
+  name:
+    - color: var(--black)
+view_layout:
+  grid-column: span 2

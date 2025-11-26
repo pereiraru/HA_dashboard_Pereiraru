@@ -1,0 +1,12 @@
+# Energy Card - Monthly Total Consumption
+type: custom:button-card
+entity: sensor.mensal_kwh_total
+name: Total Mensal
+icon: mdi:calendar-month
+template: info_card
+state_display: |
+  [[[
+    return parseFloat(entity.state).toFixed(1) + " kWh";
+  ]]]
+view_layout:
+  grid-column: span 2

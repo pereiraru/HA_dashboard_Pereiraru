@@ -1,0 +1,12 @@
+# Energy Card - Monthly Cost
+type: custom:button-card
+entity: sensor.edp_valor_mensal_euros
+name: Custo Mensal
+icon: mdi:currency-eur
+template: info_card
+state_display: |
+  [[[
+    return parseFloat(entity.state).toFixed(2) + " €";
+  ]]]
+view_layout:
+  grid-column: span 2

@@ -1,0 +1,12 @@
+# Car Card - Battery Range
+type: custom:button-card
+entity: sensor.ze_das_pilhas_battery_range
+name: Autonomia
+icon: mdi:map-marker-distance
+template: info_card
+state_display: |
+  [[[
+    return Math.round(entity.state) + " km";
+  ]]]
+view_layout:
+  grid-column: span 2

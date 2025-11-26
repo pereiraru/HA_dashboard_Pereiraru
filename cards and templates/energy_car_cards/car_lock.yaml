@@ -1,0 +1,19 @@
+# Car Card - Door Lock
+type: custom:button-card
+entity: lock.ze_das_pilhas
+name: Fechadura
+icon: |
+  [[[
+    if (entity.state == "locked") return "mdi:lock";
+    else return "mdi:lock-open";
+  ]]]
+template: switch_card
+state_display: |
+  [[[
+    if (entity.state == "locked") return "Trancado";
+    else return "Aberto";
+  ]]]
+tap_action:
+  action: more-info
+view_layout:
+  grid-column: span 2

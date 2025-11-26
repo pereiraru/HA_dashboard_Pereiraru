@@ -1,0 +1,15 @@
+# Car Card - Charger Power
+type: custom:button-card
+entity: sensor.ze_das_pilhas_charger_power
+name: Potência Carregador
+icon: mdi:flash
+template: info_card
+state_display: |
+  [[[
+    if (parseFloat(entity.state) > 0) {
+      return parseFloat(entity.state).toFixed(1) + " kW";
+    }
+    return "0 kW";
+  ]]]
+view_layout:
+  grid-column: span 2

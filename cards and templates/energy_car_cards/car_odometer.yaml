@@ -1,0 +1,8 @@
+# Car Card - Odometer/Mileage
+type: custom:button-card
+entity: sensor.ze_das_pilhas_odometer
+name: Quilometragem
+icon: mdi:counter
+template: info_card
+view_layout:
+  grid-column: span 2

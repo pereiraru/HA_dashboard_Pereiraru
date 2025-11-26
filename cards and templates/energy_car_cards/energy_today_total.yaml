@@ -1,0 +1,12 @@
+# Energy Card - Total Consumption Today
+type: custom:button-card
+entity: sensor.edp_dia_total_kwh_consumidos
+name: Total Hoje
+icon: mdi:counter
+template: info_card
+state_display: |
+  [[[
+    return parseFloat(entity.state).toFixed(2) + " kWh";
+  ]]]
+view_layout:
+  grid-column: span 2

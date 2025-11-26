@@ -1,0 +1,425 @@
+button_card_templates:
+
+  # ============================================
+  # BASE TEMPLATE
+  # ============================================
+  base_card:
+    tap_action:
+      action: toggle
+      haptic: success
+    hold_action:
+      action: more-info
+    styles:
+      card:
+        - border-radius: 24px
+        - box-shadow: none
+        - padding: 12px 14px
+      icon:
+        - width: 24px
+      name:
+        - justify-self: start
+        - font-size: 11px
+        - font-weight: 400
+        - opacity: 0.7
+
+  # ============================================
+  # LIGHT CARD TEMPLATE
+  # ============================================
+  light_card:
+    template: base_card
+    show_state: false
+    show_name: true
+    custom_fields:
+      icon2:
+        card:
+          type: custom:button-card
+          icon: |
+            [[[
+              if (entity.state == "on") return "mdi:lightbulb";
+              else return "mdi:lightbulb-outline";
+            ]]]
+          styles:
+            card:
+              - background-color: var(--contrast1)
+              - width: 27px
+              - height: 27px
+              - border-radius: 12px
+            icon:
+              - width: 15px
+              - color: var(--contrast20)
+    styles:
+      grid:
+        - grid-template-areas: '"i icon2" "n n"'
+        - grid-template-columns: 1fr auto
+        - grid-template-rows: min-content min-content
+      card:
+        - height: 75px
+        - background-color: |
+            [[[
+              if (entity.state == "on") return "var(--yellow)";
+              else return "var(--contrast2)";
+            ]]]
+      icon:
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      custom_fields:
+        icon2:
+          - align-self: start
+          - justify-self: end
+
+  # ============================================
+  # SWITCH CARD TEMPLATE
+  # ============================================
+  switch_card:
+    template: base_card
+    show_state: true
+    custom_fields:
+      icon2:
+        card:
+          type: custom:button-card
+          icon: |
+            [[[
+              if (entity.state == "on") return "mdi:toggle-switch";
+              else return "mdi:toggle-switch-off-outline";
+            ]]]
+          styles:
+            card:
+              - background-color: var(--contrast1)
+              - width: 27px
+              - height: 27px
+              - border-radius: 12px
+            icon:
+              - width: 15px
+              - color: var(--contrast20)
+    styles:
+      grid:
+        - grid-template-areas: '"i s icon2" "n n n"'
+        - grid-template-columns: 20px 1fr auto
+        - grid-template-rows: 1fr min-content
+      card:
+        - height: 75px
+        - background-color: |
+            [[[
+              if (entity.state == "on") return "var(--green)";
+              else return "var(--contrast2)";
+            ]]]
+      icon:
+        - margin-top: 7px
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - margin-bottom: 3px
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - justify-self: start
+        - font-size: 20px
+        - margin-top: 11px
+        - padding-left: 3px
+        - font-weight: 500
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      custom_fields:
+        icon2:
+          - margin-top: "-20px"
+          - justify-self: end
+          - align-self: center
+          - padding-right: 10px
+
+  # ============================================
+  # CLIMATE CARD TEMPLATE
+  # ============================================
+  climate_card:
+    template: base_card
+    icon: |
+      [[[
+        if (entity.state == "auto") return "mdi:thermostat-auto";
+        else if (entity.state == "heat") return "mdi:fire";
+        else if (entity.state == "cool") return "mdi:snowflake";
+        else return "mdi:thermostat";
+      ]]]
+    tap_action:
+      action: more-info
+    double_tap_action:
+      action: call-service
+      service: climate.set_hvac_mode
+      service_data:
+        hvac_mode: auto
+        entity_id: '[[[ return entity.entity_id ]]]'
+    custom_fields:
+      temp: |
+        [[[
+          var temp = entity.attributes.current_temperature;
+          var target = entity.attributes.temperature;
+          return `${parseFloat(temp).toFixed(1)}° <span style="font-size: 0.6em;opacity:0.7">→ ${parseFloat(target).toFixed(0)}°</span>`;
+        ]]]
+      controls:
+        card:
+          type: custom:button-card
+          entity: '[[[ return entity.entity_id ]]]'
+          show_label: true
+          show_name: false
+          show_icon: false
+          label: '[[[ return states[entity.entity_id].attributes.temperature + "°" ]]]'
+          custom_fields:
+            minus:
+              card:
+                type: custom:button-card
+                icon: mdi:minus
+                tap_action:
+                  action: call-service
+                  service: climate.set_temperature
+                  service_data:
+                    temperature: |
+                      [[[
+                        return states[entity.entity_id].attributes.temperature - 0.5;
+                      ]]]
+                    entity_id: '[[[ return entity.entity_id ]]]'
+                styles:
+                  icon:
+                    - width: 20px
+                  card:
+                    - box-shadow: none
+                    - background: none
+            plus:
+              card:
+                type: custom:button-card
+                icon: mdi:plus
+                tap_action:
+                  action: call-service
+                  service: climate.set_temperature
+                  service_data:
+                    temperature: |
+                      [[[
+                        return states[entity.entity_id].attributes.temperature + 0.5;
+                      ]]]
+                    entity_id: '[[[ return entity.entity_id ]]]'
+                styles:
+                  icon:
+                    - width: 20px
+                  card:
+                    - box-shadow: none
+                    - background: none
+          styles:
+            grid:
+              - grid-template-areas: '"minus l plus"'
+              - grid-template-columns: 50px 1fr 50px
+            card:
+              - background-color: var(--contrast4)
+              - padding: 5px
+              - border-radius: 12px
+              - height: 35px
+            label:
+              - font-weight: 500
+              - font-size: 14px
+    styles:
+      card:
+        - height: 194px
+        - background: var(--contrast2)
+        - padding: 8px
+      grid:
+        - grid-template-areas: '"n i" "temp temp" "controls controls"'
+        - grid-template-rows: min-content 1fr min-content
+        - grid-template-columns: 1fr auto
+      icon:
+        - width: 24px
+        - color: |
+            [[[
+              if (entity.state == "off") return "var(--contrast10)";
+              else return "var(--black)";
+            ]]]
+      img_cell:
+        - justify-self: end
+        - background: |
+            [[[
+              if (entity.state == "auto") return "var(--green)";
+              else if (entity.state == "heat") return "var(--red)";
+              else if (entity.state == "cool") return "var(--blue)";
+              else return "var(--contrast1)";
+            ]]]
+        - border-radius: 100%
+        - align-self: start
+        - width: 50px
+        - height: 50px
+      name:
+        - justify-self: start
+        - align-self: start
+        - text-align: left
+        - font-size: 1em
+        - font-weight: 500
+        - color: var(--contrast20)
+        - padding: 14px
+      custom_fields:
+        temp:
+          - justify-self: start
+          - font-size: 2.4em
+          - font-weight: 300
+          - color: var(--contrast20)
+          - padding: 0 0 6px 14px
+          - margin-bottom: 10px
+        controls:
+          - margin-bottom: 10px
+
+  # ============================================
+  # COVER CARD TEMPLATE
+  # ============================================
+  cover_card:
+    template: base_card
+    icon: |
+      [[[
+        if (entity.state == "open") return "mdi:window-shutter-open";
+        else if (entity.state == "closed") return "mdi:window-shutter";
+        else return "mdi:window-shutter-alert";
+      ]]]
+    show_state: true
+    tap_action:
+      action: call-service
+      service: cover.toggle
+      service_data:
+        entity_id: '[[[ return entity.entity_id ]]]'
+    custom_fields:
+      icon2:
+        card:
+          type: custom:button-card
+          icon: |
+            [[[
+              if (entity.state == "open") return "mdi:arrow-down";
+              else return "mdi:arrow-up";
+            ]]]
+          styles:
+            card:
+              - background-color: var(--contrast1)
+              - width: 27px
+              - height: 27px
+              - border-radius: 12px
+            icon:
+              - width: 15px
+              - color: var(--contrast20)
+    styles:
+      grid:
+        - grid-template-areas: '"i s icon2" "n n n"'
+        - grid-template-columns: 20px 1fr auto
+        - grid-template-rows: 1fr min-content
+      card:
+        - height: 75px
+        - background-color: |
+            [[[
+              if (entity.state == "open") return "var(--blue)";
+              else return "var(--contrast2)";
+            ]]]
+      icon:
+        - margin-top: 7px
+        - color: |
+            [[[
+              if (entity.state == "open") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - color: |
+            [[[
+              if (entity.state == "open") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - justify-self: start
+        - font-size: 20px
+        - margin-top: 11px
+        - padding-left: 3px
+        - font-weight: 500
+        - color: |
+            [[[
+              if (entity.state == "open") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      custom_fields:
+        icon2:
+          - margin-top: "-20px"
+          - justify-self: end
+          - align-self: center
+          - padding-right: 10px
+
+  # ============================================
+  # ROOM HEADER TEMPLATE
+  # ============================================
+  room_header:
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    show_icon: false
+    show_state: false
+    show_label: true
+    styles:
+      card:
+        - background: none
+        - box-shadow: none
+        - padding: 20px 14px 10px 14px
+        - height: auto
+      name:
+        - font-size: 28px
+        - font-weight: 600
+        - color: var(--contrast20)
+        - justify-self: start
+        - text-align: left
+      label:
+        - font-size: 14px
+        - font-weight: 400
+        - color: var(--contrast16)
+        - justify-self: start
+        - text-align: left
+        - opacity: 0.7
+      grid:
+        - grid-template-areas: '"n" "l"'
+        - grid-template-columns: 1fr
+
+  # ============================================
+  # INFO CARD TEMPLATE
+  # ============================================
+  info_card:
+    tap_action:
+      action: more-info
+    show_state: true
+    show_name: true
+    styles:
+      card:
+        - height: 75px
+        - background: var(--contrast2)
+        - border-radius: 24px
+        - padding: 12px 14px
+      grid:
+        - grid-template-areas: '"i s" "i n"'
+        - grid-template-columns: min-content 1fr
+        - grid-template-rows: 1fr min-content
+      icon:
+        - width: 40px
+        - color: var(--contrast20)
+      state:
+        - justify-self: start
+        - font-size: 24px
+        - font-weight: 500
+        - color: var(--contrast20)
+        - padding-left: 12px
+      name:
+        - justify-self: start
+        - font-size: 11px
+        - opacity: 0.7
+        - color: var(--contrast16)
+        - padding-left: 12px

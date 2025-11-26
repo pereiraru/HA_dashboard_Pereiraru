@@ -1,0 +1,54 @@
+# Car Card - Battery Level (Large Display)
+# Large gradient card with battery level and range
+type: custom:button-card
+entity: sensor.ze_das_pilhas_battery_level
+name: Bateria
+icon: mdi:battery-charging-80
+tap_action:
+  action: more-info
+show_state: true
+show_label: true
+label: |
+  [[[
+    var range = states['sensor.ze_das_pilhas_battery_range'].state;
+    return range + " km de autonomia";
+  ]]]
+styles:
+  card:
+    - height: 120px
+    - background: |
+        [[[
+          var level = parseFloat(entity.state);
+          if (level > 75) return "linear-gradient(135deg, var(--green) 0%, #40c000 100%)";
+          else if (level > 50) return "linear-gradient(135deg, var(--yellow) 0%, #FFA726 100%)";
+          else if (level > 25) return "linear-gradient(135deg, var(--yellow) 0%, #FF8800 100%)";
+          else return "linear-gradient(135deg, var(--red) 0%, #c00000 100%)";
+        ]]]
+    - border-radius: 24px
+    - padding: 16px
+  grid:
+    - grid-template-areas: '"i" "n" "s" "l"'
+    - grid-template-columns: 1fr
+    - grid-template-rows: min-content min-content min-content min-content
+  icon:
+    - width: 48px
+    - color: var(--black)
+    - justify-self: center
+  name:
+    - justify-self: center
+    - font-size: 14px
+    - color: var(--black)
+    - opacity: 0.8
+  state:
+    - justify-self: center
+    - font-size: 42px
+    - font-weight: 600
+    - color: var(--black)
+  label:
+    - justify-self: center
+    - font-size: 13px
+    - color: var(--black)
+    - opacity: 0.7
+view_layout:
+  grid-column: span 4
+  grid-row: span 2

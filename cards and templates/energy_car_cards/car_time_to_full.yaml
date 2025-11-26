@@ -1,0 +1,18 @@
+# Car Card - Time to Full Charge
+type: custom:button-card
+entity: sensor.ze_das_pilhas_time_to_full_charge
+name: Tempo para Completo
+icon: mdi:clock-outline
+template: info_card
+state_display: |
+  [[[
+    if (states['sensor.ze_das_pilhas_charging'].state == "Charging") {
+      var dt = new Date(entity.state);
+      var hours = dt.getHours().toString().padStart(2, '0');
+      var minutes = dt.getMinutes().toString().padStart(2, '0');
+      return hours + ":" + minutes;
+    }
+    return "N/A";
+  ]]]
+view_layout:
+  grid-column: span 2

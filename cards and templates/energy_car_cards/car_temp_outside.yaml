@@ -1,0 +1,12 @@
+# Car Card - Outside Temperature
+type: custom:button-card
+entity: sensor.ze_das_pilhas_outside_temperature
+name: Temp. Exterior
+icon: mdi:thermometer
+template: info_card
+state_display: |
+  [[[
+    return parseFloat(entity.state).toFixed(1) + "°C";
+  ]]]
+view_layout:
+  grid-column: span 2

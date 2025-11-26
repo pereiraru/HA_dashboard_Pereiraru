@@ -1,0 +1,16 @@
+# Car Card - Climate Control
+type: custom:button-card
+entity: climate.ze_das_pilhas_climate
+name: Ar Condicionado
+icon: mdi:air-conditioner
+template: switch_card
+state_display: |
+  [[[
+    if (entity.state == "heat_cool") return "Ligado";
+    else if (entity.state == "off") return "Desligado";
+    else return entity.state;
+  ]]]
+tap_action:
+  action: more-info
+view_layout:
+  grid-column: span 2
