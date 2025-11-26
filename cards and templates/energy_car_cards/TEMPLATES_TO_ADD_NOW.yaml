@@ -1,0 +1,162 @@
+# ============================================
+# COPY THESE 3 TEMPLATES TO YOUR DASHBOARD
+# Add to your button_card_templates section
+# ============================================
+
+button_card_templates:
+
+  # ... YOUR EXISTING 15 TEMPLATES HERE ...
+
+  # ============================================
+  # ADD THESE 3 NEW TEMPLATES BELOW:
+  # ============================================
+
+  # 1. ROOM HEADER - For page section titles
+  room_header:
+    template: setup
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    show_icon: false
+    show_state: false
+    show_label: true
+    styles:
+      card:
+        - background: none
+        - box-shadow: none
+        - padding: 20px 14px 10px 14px
+        - height: auto
+      name:
+        - font-size: 28px
+        - font-weight: 600
+        - color: var(--contrast20)
+        - justify-self: start
+        - text-align: left
+      label:
+        - font-size: 14px
+        - font-weight: 400
+        - color: var(--contrast16)
+        - justify-self: start
+        - text-align: left
+        - opacity: 0.7
+      grid:
+        - grid-template-areas: '"n" "l"'
+        - grid-template-columns: 1fr
+
+  # 2. INFO CARD - Simple info/status display
+  info_card:
+    template: setup
+    tap_action:
+      action: more-info
+    show_state: true
+    show_name: true
+    styles:
+      card:
+        - height: 75px
+        - background: var(--contrast2)
+        - border-radius: 24px
+        - padding: 12px 14px
+      grid:
+        - grid-template-areas: '"i s" "i n"'
+        - grid-template-columns: min-content 1fr
+        - grid-template-rows: 1fr min-content
+      icon:
+        - width: 40px
+        - color: var(--contrast20)
+      state:
+        - justify-self: start
+        - font-size: 24px
+        - font-weight: 500
+        - color: var(--contrast20)
+        - padding-left: 12px
+      name:
+        - justify-self: start
+        - font-size: 11px
+        - opacity: 0.7
+        - color: var(--contrast16)
+        - padding-left: 12px
+
+  # 3. COVER CARD - For blinds/shutters (if needed)
+  cover_card:
+    template: setup
+    icon: |
+      [[[
+        if (entity.state == "open") return "mdi:window-shutter-open";
+        else if (entity.state == "closed") return "mdi:window-shutter";
+        else return "mdi:window-shutter-alert";
+      ]]]
+    show_state: true
+    tap_action:
+      action: call-service
+      service: cover.toggle
+      service_data:
+        entity_id: '[[[ return entity.entity_id ]]]'
+      haptic: success
+    custom_fields:
+      icon2:
+        card:
+          type: custom:button-card
+          icon: |
+            [[[
+              if (entity.state == "open") return "mdi:arrow-down";
+              else return "mdi:arrow-up";
+            ]]]
+          styles:
+            card:
+              - background-color: var(--contrast1)
+              - width: 27px
+              - height: 27px
+              - border-radius: 12px
+            icon:
+              - width: 15px
+              - color: var(--contrast20)
+    styles:
+      grid:
+        - grid-template-areas: '"i s icon2" "n n n"'
+        - grid-template-columns: 20px 1fr auto
+        - grid-template-rows: 1fr min-content
+      card:
+        - height: 75px
+        - background-color: |
+            [[[
+              if (entity.state == "open") return "var(--blue)";
+              else return "var(--contrast2)";
+            ]]]
+        - border-radius: 24px
+        - padding: 12px 0 12px 14px
+      icon:
+        - margin-top: 7px
+        - width: 20px
+        - color: |
+            [[[
+              if (entity.state == "open") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - justify-self: start
+        - font-size: 11px
+        - margin-bottom: 3px
+        - opacity: 0.7
+        - color: |
+            [[[
+              if (entity.state == "open") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - justify-self: start
+        - font-size: 20px
+        - margin-top: 11px
+        - padding-left: 3px
+        - font-weight: 500
+        - color: |
+            [[[
+              if (entity.state == "open") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      custom_fields:
+        icon2:
+          - margin-top: "-20px"
+          - justify-self: end
+          - align-self: center
+          - padding-right: 10px

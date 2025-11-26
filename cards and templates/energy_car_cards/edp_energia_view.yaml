@@ -1,0 +1,819 @@
+title: EDP Energia
+path: edp
+icon: mdi:flash
+type: custom:grid-layout
+layout:
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr))
+  grid-gap: 12px
+  padding: 12px
+cards:
+  # ============================================
+  # HEADER
+  # ============================================
+  - type: custom:button-card
+    name: EDP Energia
+    label: Monitorização e análise de consumos
+    template: room_header
+    view_layout:
+      grid-column: 1 / -1
+
+  # ============================================
+  # OVERVIEW CARDS - Quick Status
+  # ============================================
+
+  # Current Power (Large Card - Spans 2 columns)
+  - type: custom:button-card
+    entity: sensor.w_shelly_todos_juntos
+    name: Potência Atual
+    icon: mdi:flash
+    show_state: true
+    show_label: true
+    label: |
+      [[[
+        var power = parseFloat(entity.state);
+        if (power > 5000) return "⚠️ Consumo Muito Alto";
+        else if (power > 2000) return "⚡ Consumo Elevado";
+        else if (power > 500) return "✓ Consumo Normal";
+        else return "💚 Consumo Baixo";
+      ]]]
+    state_display: |
+      [[[
+        return Math.round(entity.state) + " W";
+      ]]]
+    styles:
+      card:
+        - height: 120px
+        - background: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 5000) return "linear-gradient(135deg, var(--red) 0%, #c00000 100%)";
+              else if (power > 2000) return "linear-gradient(135deg, var(--yellow) 0%, #FFA726 100%)";
+              else if (power > 500) return "linear-gradient(135deg, var(--blue) 0%, #42A5F5 100%)";
+              else return "linear-gradient(135deg, var(--green) 0%, #40c000 100%)";
+            ]]]
+        - border-radius: 24px
+        - padding: 16px
+      grid:
+        - grid-template-areas: '"i" "l" "n" "s"'
+        - grid-template-rows: min-content min-content min-content 1fr
+      icon:
+        - width: 50px
+        - color: var(--black)
+        - margin-bottom: 8px
+      name:
+        - font-size: 12px
+        - opacity: 0.8
+        - color: var(--black)
+        - margin-bottom: 4px
+      state:
+        - font-size: 32px
+        - font-weight: 600
+        - color: var(--black)
+        - margin-bottom: 4px
+      label:
+        - font-size: 13px
+        - color: var(--black)
+        - opacity: 0.9
+        - font-weight: 500
+    view_layout:
+      grid-column: span 2
+
+  # Current Period
+  - type: custom:button-card
+    entity: sensor.edp_periodo_atual
+    name: Período Atual
+    icon: |
+      [[[
+        if (entity.state == "daily") return "mdi:white-balance-sunny";
+        else return "mdi:weather-night";
+      ]]]
+    template: info_card
+    state_display: |
+      [[[
+        if (entity.state == "daily") return "☀️ Dia";
+        else if (entity.state == "nightly") return "🌙 Noite";
+        else return entity.state;
+      ]]]
+    styles:
+      card:
+        - background: |
+            [[[
+              if (entity.state == "daily") return "var(--yellow)";
+              else return "var(--blue)";
+            ]]]
+      icon:
+        - color: var(--black)
+      state:
+        - color: var(--black)
+      name:
+        - color: var(--black)
+        - opacity: 0.8
+
+  # Tariff Type
+  - type: custom:button-card
+    entity: select.um_diario
+    name: Tarifa
+    icon: mdi:cash-multiple
+    template: info_card
+
+  # Days in Cycle
+  - type: custom:button-card
+    entity: sensor.edp_days_in_current_cycle
+    name: Dias no Ciclo
+    icon: mdi:calendar-clock
+    template: info_card
+    state_display: |
+      [[[
+        return entity.state + " dias";
+      ]]]
+
+  # ============================================
+  # TODAY'S CONSUMPTION
+  # ============================================
+  - type: custom:button-card
+    name: Consumo de Hoje
+    template: room_header
+    styles:
+      card:
+        - padding: 15px 14px 5px 14px
+    view_layout:
+      grid-column: 1 / -1
+
+  # Today Total Day
+  - type: custom:button-card
+    entity: sensor.um_diario_daily
+    name: ☀️ Consumo Dia
+    icon: mdi:white-balance-sunny
+    template: info_card
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(2) + " kWh";
+      ]]]
+    styles:
+      card:
+        - background: var(--yellow)
+      icon:
+        - color: var(--black)
+      state:
+        - color: var(--black)
+      name:
+        - color: var(--black)
+        - opacity: 0.8
+
+  # Today Total Night
+  - type: custom:button-card
+    entity: sensor.um_diario_nightly
+    name: 🌙 Consumo Noite
+    icon: mdi:weather-night
+    template: info_card
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(2) + " kWh";
+      ]]]
+    styles:
+      card:
+        - background: var(--blue)
+      icon:
+        - color: var(--black)
+      state:
+        - color: var(--black)
+      name:
+        - color: var(--black)
+        - opacity: 0.8
+
+  # Today's Cost
+  - type: custom:button-card
+    entity: sensor.edp_valor_diario_euros
+    name: 💰 Custo Hoje
+    icon: mdi:currency-eur
+    template: info_card
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(2) + " €";
+      ]]]
+    view_layout:
+      grid-column: span 2
+
+  # ============================================
+  # CONSUMPTION CHART (Full Width)
+  # ============================================
+  - type: custom:apexcharts-card
+    header:
+      show: true
+      title: 📈 Consumo Últimos 15 Dias (Dia vs Noite)
+      show_states: true
+      colorize_states: true
+    graph_span: 15d
+    now:
+      show: true
+      label: Hoje
+    span:
+      start: day
+      offset: "-14d"
+    stacked: true
+    apex_config:
+      chart:
+        height: 280
+      plotOptions:
+        bar:
+          columnWidth: 70%
+      legend:
+        show: true
+        position: top
+      dataLabels:
+        enabled: true
+        formatter: |
+          EVAL:function(value) {
+            return value ? value.toFixed(2) + ' kWh' : '';
+          }
+      xaxis:
+        type: datetime
+        labels:
+          format: dd/MM
+    series:
+      - entity: sensor.um_diario_daily
+        name: ☀️ Dia
+        type: column
+        color: "#FFA726"
+        group_by:
+          func: last
+          duration: 1d
+      - entity: sensor.um_diario_nightly
+        name: 🌙 Noite
+        type: column
+        color: "#42A5F5"
+        group_by:
+          func: last
+          duration: 1d
+    view_layout:
+      grid-column: 1 / -1
+
+  # ============================================
+  # POWER MONITORS - Individual Devices
+  # ============================================
+  - type: custom:button-card
+    name: Monitorização Individual
+    template: room_header
+    styles:
+      card:
+        - padding: 15px 14px 5px 14px
+    view_layout:
+      grid-column: 1 / -1
+
+  # Heater Suite
+  - type: custom:button-card
+    entity: sensor.tomada_aquecedor_suite_power
+    name: Aquecedor Suite
+    icon: mdi:radiator
+    template: info_card
+    state_display: |
+      [[[
+        var power = parseFloat(entity.state);
+        return power.toFixed(0) + " W";
+      ]]]
+    styles:
+      card:
+        - background: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 1500) return "var(--red)";
+              else if (power > 500) return "var(--yellow)";
+              else if (power > 10) return "var(--blue)";
+              else return "var(--contrast2)";
+            ]]]
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      icon:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast16)";
+            ]]]
+
+  # Server NAS
+  - type: custom:button-card
+    entity: sensor.tomada_servidor_nas_power
+    name: Servidor NAS
+    icon: mdi:server
+    template: info_card
+    state_display: |
+      [[[
+        var power = parseFloat(entity.state);
+        return power.toFixed(0) + " W";
+      ]]]
+    styles:
+      card:
+        - background: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 200) return "var(--red)";
+              else if (power > 100) return "var(--yellow)";
+              else if (power > 10) return "var(--blue)";
+              else return "var(--contrast2)";
+            ]]]
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      icon:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast16)";
+            ]]]
+
+  # Unifi Network
+  - type: custom:button-card
+    entity: sensor.tomada_ubiquiti_rede_power
+    name: Unifi Rede
+    icon: mdi:server-network-outline
+    template: info_card
+    state_display: |
+      [[[
+        var power = parseFloat(entity.state);
+        return power.toFixed(0) + " W";
+      ]]]
+    styles:
+      card:
+        - background: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 100) return "var(--red)";
+              else if (power > 50) return "var(--yellow)";
+              else if (power > 10) return "var(--blue)";
+              else return "var(--contrast2)";
+            ]]]
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      icon:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast16)";
+            ]]]
+
+  # Office Desk
+  - type: custom:button-card
+    entity: sensor.tomada_escritorio_power
+    name: Escritório
+    icon: mdi:laptop
+    template: info_card
+    state_display: |
+      [[[
+        var power = parseFloat(entity.state);
+        return power.toFixed(0) + " W";
+      ]]]
+    styles:
+      card:
+        - background: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 300) return "var(--red)";
+              else if (power > 150) return "var(--yellow)";
+              else if (power > 10) return "var(--blue)";
+              else return "var(--contrast2)";
+            ]]]
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      icon:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast16)";
+            ]]]
+
+  # Oven & Stove
+  - type: custom:button-card
+    entity: sensor.shelly_pro_em_1_em0_power_corrigido
+    name: Forno & Placa
+    icon: mdi:toaster-oven
+    template: info_card
+    state_display: |
+      [[[
+        var power = parseFloat(entity.state);
+        return power.toFixed(0) + " W";
+      ]]]
+    styles:
+      card:
+        - background: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 3000) return "var(--red)";
+              else if (power > 1000) return "var(--yellow)";
+              else if (power > 10) return "var(--blue)";
+              else return "var(--contrast2)";
+            ]]]
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      icon:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast16)";
+            ]]]
+
+  # Tesla Charger
+  - type: custom:button-card
+    entity: sensor.shelly_pro_em_1_em1_power
+    name: Carregador Tesla
+    icon: mdi:ev-plug-tesla
+    template: info_card
+    state_display: |
+      [[[
+        var power = parseFloat(entity.state);
+        return power.toFixed(0) + " W";
+      ]]]
+    styles:
+      card:
+        - background: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 5000) return "var(--green)";
+              else if (power > 1000) return "var(--blue)";
+              else if (power > 10) return "var(--yellow)";
+              else return "var(--contrast2)";
+            ]]]
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      icon:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast16)";
+            ]]]
+
+  # Living Room & Kitchen
+  - type: custom:button-card
+    entity: sensor.shellyproem50_08f9e0e7ce0c_em1_power
+    name: Sala & Cozinha
+    icon: mdi:sofa
+    template: info_card
+    state_display: |
+      [[[
+        var power = parseFloat(entity.state);
+        return power.toFixed(0) + " W";
+      ]]]
+    styles:
+      card:
+        - background: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 2000) return "var(--red)";
+              else if (power > 500) return "var(--yellow)";
+              else if (power > 10) return "var(--blue)";
+              else return "var(--contrast2)";
+            ]]]
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      icon:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast16)";
+            ]]]
+
+  # Heat Pump
+  - type: custom:button-card
+    entity: sensor.shellyproem50_08f9e0e4f828_em1_power
+    name: Bomba de Calor
+    icon: mdi:water-boiler
+    template: info_card
+    state_display: |
+      [[[
+        var power = parseFloat(entity.state);
+        return power.toFixed(0) + " W";
+      ]]]
+    styles:
+      card:
+        - background: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 2000) return "var(--red)";
+              else if (power > 800) return "var(--yellow)";
+              else if (power > 10) return "var(--blue)";
+              else return "var(--contrast2)";
+            ]]]
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      icon:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      state:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      name:
+        - color: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 10) return "var(--black)";
+              else return "var(--contrast16)";
+            ]]]
+
+  # ============================================
+  # MONTHLY CYCLE SUMMARY
+  # ============================================
+  - type: custom:button-card
+    name: Ciclo Mensal (10-9)
+    template: room_header
+    styles:
+      card:
+        - padding: 15px 14px 5px 14px
+    view_layout:
+      grid-column: 1 / -1
+
+  # Monthly Day Consumption
+  - type: custom:button-card
+    entity: sensor.mensal_kwh_daily
+    name: ☀️ Total Dia (Ciclo)
+    icon: mdi:white-balance-sunny
+    template: info_card
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(2) + " kWh";
+      ]]]
+    styles:
+      card:
+        - background: var(--yellow)
+      icon:
+        - color: var(--black)
+      state:
+        - color: var(--black)
+      name:
+        - color: var(--black)
+        - opacity: 0.8
+
+  # Monthly Night Consumption
+  - type: custom:button-card
+    entity: sensor.mensal_kwh_nighly
+    name: 🌙 Total Noite (Ciclo)
+    icon: mdi:weather-night
+    template: info_card
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(2) + " kWh";
+      ]]]
+    styles:
+      card:
+        - background: var(--blue)
+      icon:
+        - color: var(--black)
+      state:
+        - color: var(--black)
+      name:
+        - color: var(--black)
+        - opacity: 0.8
+
+  # Monthly Total
+  - type: custom:button-card
+    entity: sensor.mensal_kwh_total
+    name: Total do Ciclo
+    icon: mdi:chart-line
+    template: info_card
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(2) + " kWh";
+      ]]]
+    view_layout:
+      grid-column: span 2
+
+  # Monthly Cost
+  - type: custom:button-card
+    entity: sensor.edp_valor_mensal_euros
+    name: 💰 Custo Total do Ciclo
+    icon: mdi:currency-eur-off
+    template: info_card
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(2) + " €";
+      ]]]
+    styles:
+      card:
+        - background: var(--purple)
+      icon:
+        - color: var(--black)
+      state:
+        - color: var(--black)
+      name:
+        - color: var(--black)
+        - opacity: 0.8
+    view_layout:
+      grid-column: span 2
+
+  # Cycle Info Card (Markdown)
+  - type: markdown
+    content: >
+      ## 📋 Informação do Ciclo Atual
+
+      **Consumo Acumulado:** {{ states('sensor.mensal_kwh_total') }} kWh
+
+      - ☀️ Período Dia: {{ states('sensor.mensal_kwh_daily') }} kWh
+
+      - 🌙 Período Noite: {{ states('sensor.mensal_kwh_nighly') }} kWh
+
+
+      **Custo Acumulado:** {{ states('sensor.edp_valor_mensal_euros') }} €
+
+
+      **Média Diária:** {{ (states('sensor.mensal_kwh_total') | float / states('sensor.edp_days_in_current_cycle') | float) | round(2) }} kWh/dia
+
+
+      ---
+
+      **Ciclo de Faturação:**
+
+      - 📅 Início: Dia 10 de cada mês
+
+      - 📅 Fim: Dia 9 do mês seguinte
+
+      - 📆 Dias decorridos: {{ states('sensor.edp_days_in_current_cycle') }} dias
+
+      - 📆 Dias restantes: {{ 30 - (states('sensor.edp_days_in_current_cycle') | int) }} dias
+    view_layout:
+      grid-column: 1 / -1
+    card_mod:
+      style: |
+        ha-card {
+          background: var(--contrast2);
+          border-radius: 24px;
+          padding: 16px;
+        }
+
+  # ============================================
+  # TARIFF CONFIGURATION
+  # ============================================
+  - type: custom:button-card
+    name: Configurações Tarifárias
+    template: room_header
+    styles:
+      card:
+        - padding: 15px 14px 5px 14px
+    view_layout:
+      grid-column: 1 / -1
+
+  - type: entities
+    title: ⚙️ Configurações EDP
+    show_header_toggle: false
+    entities:
+      - entity: input_number.edp_config_preco_base_kwh
+        name: 💶 Preço Base kWh
+      - entity: input_number.edp_config_tarifa_social_kwh
+        name: 🏠 Tarifa Social
+      - entity: input_number.edp_config_potencia_contratada_dia
+        name: ⚡ Potência Contratada
+      - entity: input_number.edp_config_iva_baixo_percent
+        name: 📉 IVA Reduzido
+      - entity: input_number.edp_config_iva_normal_percent
+        name: 📈 IVA Normal
+      - entity: input_number.edp_config_limiar_iva_kwh
+        name: 🎯 Limiar IVA (kWh)
+    view_layout:
+      grid-column: 1 / -1
+    card_mod:
+      style: |
+        ha-card {
+          background: var(--contrast2);
+          border-radius: 24px;
+        }

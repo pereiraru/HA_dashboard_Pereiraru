@@ -1,0 +1,886 @@
+title: EDP Energia
+path: edp
+icon: mdi:flash
+type: custom:grid-layout
+layout:
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr))
+  grid-gap: 8px
+  padding: 8px
+cards:
+  # ============================================
+  # HEADER (Compact)
+  # ============================================
+  - type: custom:button-card
+    name: EDP Energia
+    label: Monitorização de consumos
+    template: room_header
+    styles:
+      card:
+        - padding: 12px 10px 6px 10px
+      name:
+        - font-size: 22px
+      label:
+        - font-size: 12px
+    view_layout:
+      grid-column: 1 / -1
+
+  # ============================================
+  # QUICK STATUS ROW (All in one line on desktop)
+  # ============================================
+
+  # Current Power (Compact - 2 columns)
+  - type: custom:button-card
+    entity: sensor.w_shelly_todos_juntos
+    name: Potência Atual
+    icon: mdi:flash
+    show_state: true
+    state_display: |
+      [[[
+        return Math.round(entity.state) + " W";
+      ]]]
+    styles:
+      card:
+        - height: 65px
+        - background: |
+            [[[
+              var power = parseFloat(entity.state);
+              if (power > 5000) return "var(--red)";
+              else if (power > 2000) return "var(--yellow)";
+              else if (power > 500) return "var(--blue)";
+              else return "var(--green)";
+            ]]]
+        - border-radius: 18px
+        - padding: 10px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 30px 1fr
+        - grid-template-rows: auto auto
+      icon:
+        - width: 30px
+        - color: var(--black)
+      name:
+        - font-size: 10px
+        - opacity: 0.8
+        - color: var(--black)
+        - justify-self: start
+        - padding-left: 8px
+      state:
+        - font-size: 22px
+        - font-weight: 600
+        - color: var(--black)
+        - justify-self: start
+        - padding-left: 8px
+    view_layout:
+      grid-column: span 2
+
+  # Period
+  - type: custom:button-card
+    entity: sensor.edp_periodo_atual
+    name: Período
+    icon: |
+      [[[
+        if (entity.state == "daily") return "mdi:white-balance-sunny";
+        else return "mdi:weather-night";
+      ]]]
+    show_state: true
+    state_display: |
+      [[[
+        if (entity.state == "daily") return "Dia";
+        else return "Noite";
+      ]]]
+    styles:
+      card:
+        - height: 65px
+        - background: |
+            [[[
+              if (entity.state == "daily") return "var(--yellow)";
+              else return "var(--blue)";
+            ]]]
+        - border-radius: 18px
+        - padding: 10px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 30px 1fr
+      icon:
+        - width: 30px
+        - color: var(--black)
+      name:
+        - font-size: 10px
+        - color: var(--black)
+        - opacity: 0.8
+        - justify-self: start
+        - padding-left: 6px
+      state:
+        - font-size: 16px
+        - font-weight: 600
+        - color: var(--black)
+        - justify-self: start
+        - padding-left: 6px
+
+  # Tariff
+  - type: custom:button-card
+    entity: select.um_diario
+    name: Tarifa
+    icon: mdi:cash-multiple
+    show_state: true
+    styles:
+      card:
+        - height: 65px
+        - background: var(--contrast2)
+        - border-radius: 18px
+        - padding: 10px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 30px 1fr
+      icon:
+        - width: 30px
+        - color: var(--contrast20)
+      name:
+        - font-size: 10px
+        - opacity: 0.8
+        - justify-self: start
+        - padding-left: 6px
+      state:
+        - font-size: 14px
+        - font-weight: 500
+        - justify-self: start
+        - padding-left: 6px
+
+  # Days in Cycle
+  - type: custom:button-card
+    entity: sensor.edp_days_in_current_cycle
+    name: Dias Ciclo
+    icon: mdi:calendar-clock
+    show_state: true
+    state_display: |
+      [[[
+        return entity.state + " dias";
+      ]]]
+    styles:
+      card:
+        - height: 65px
+        - background: var(--contrast2)
+        - border-radius: 18px
+        - padding: 10px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 30px 1fr
+      icon:
+        - width: 30px
+        - color: var(--contrast20)
+      name:
+        - font-size: 10px
+        - opacity: 0.8
+        - justify-self: start
+        - padding-left: 6px
+      state:
+        - font-size: 16px
+        - font-weight: 600
+        - justify-self: start
+        - padding-left: 6px
+
+  # ============================================
+  # TODAY'S CONSUMPTION (Compact row)
+  # ============================================
+
+  # Today Day
+  - type: custom:button-card
+    entity: sensor.um_diario_daily
+    name: Dia
+    icon: mdi:white-balance-sunny
+    show_state: true
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(1) + " kWh";
+      ]]]
+    styles:
+      card:
+        - height: 60px
+        - background: var(--yellow)
+        - border-radius: 18px
+        - padding: 8px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 28px 1fr
+      icon:
+        - width: 28px
+        - color: var(--black)
+      name:
+        - font-size: 10px
+        - color: var(--black)
+        - opacity: 0.8
+        - justify-self: start
+        - padding-left: 6px
+      state:
+        - font-size: 16px
+        - font-weight: 600
+        - color: var(--black)
+        - justify-self: start
+        - padding-left: 6px
+
+  # Today Night
+  - type: custom:button-card
+    entity: sensor.um_diario_nightly
+    name: Noite
+    icon: mdi:weather-night
+    show_state: true
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(1) + " kWh";
+      ]]]
+    styles:
+      card:
+        - height: 60px
+        - background: var(--blue)
+        - border-radius: 18px
+        - padding: 8px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 28px 1fr
+      icon:
+        - width: 28px
+        - color: var(--black)
+      name:
+        - font-size: 10px
+        - color: var(--black)
+        - opacity: 0.8
+        - justify-self: start
+        - padding-left: 6px
+      state:
+        - font-size: 16px
+        - font-weight: 600
+        - color: var(--black)
+        - justify-self: start
+        - padding-left: 6px
+
+  # Today Cost
+  - type: custom:button-card
+    entity: sensor.edp_valor_diario_euros
+    name: Custo Hoje
+    icon: mdi:currency-eur
+    show_state: true
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(2) + " €";
+      ]]]
+    styles:
+      card:
+        - height: 60px
+        - background: var(--purple)
+        - border-radius: 18px
+        - padding: 8px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 28px 1fr
+      icon:
+        - width: 28px
+        - color: var(--black)
+      name:
+        - font-size: 10px
+        - color: var(--black)
+        - opacity: 0.8
+        - justify-self: start
+        - padding-left: 6px
+      state:
+        - font-size: 16px
+        - font-weight: 600
+        - color: var(--black)
+        - justify-self: start
+        - padding-left: 6px
+
+  # ============================================
+  # CHART (Compact height)
+  # ============================================
+  - type: custom:apexcharts-card
+    header:
+      show: true
+      title: Consumo 15 Dias
+      show_states: false
+    graph_span: 15d
+    now:
+      show: true
+      label: Hoje
+    span:
+      start: day
+      offset: "-14d"
+    stacked: true
+    apex_config:
+      chart:
+        height: 200
+      plotOptions:
+        bar:
+          columnWidth: 80%
+      legend:
+        show: true
+        position: top
+        fontSize: 11px
+      dataLabels:
+        enabled: false
+      xaxis:
+        type: datetime
+        labels:
+          format: dd/MM
+          style:
+            fontSize: 10px
+    series:
+      - entity: sensor.um_diario_daily
+        name: Dia
+        type: column
+        color: "#FFA726"
+        group_by:
+          func: last
+          duration: 1d
+      - entity: sensor.um_diario_nightly
+        name: Noite
+        type: column
+        color: "#42A5F5"
+        group_by:
+          func: last
+          duration: 1d
+    view_layout:
+      grid-column: 1 / -1
+
+  # ============================================
+  # POWER MONITORS (Compact 2-row grid)
+  # ============================================
+
+  # Heater
+  - type: custom:button-card
+    entity: sensor.tomada_aquecedor_suite_power
+    name: Aquecedor
+    icon: mdi:radiator
+    show_state: true
+    state_display: |
+      [[[
+        return Math.round(entity.state) + "W";
+      ]]]
+    styles:
+      card:
+        - height: 55px
+        - border-radius: 18px
+        - padding: 8px
+        - background: |
+            [[[
+              var p = parseFloat(entity.state);
+              if (p > 1500) return "var(--red)";
+              if (p > 500) return "var(--yellow)";
+              if (p > 10) return "var(--blue)";
+              return "var(--contrast2)";
+            ]]]
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 26px 1fr
+      icon:
+        - width: 26px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+      name:
+        - font-size: 9px
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast16)";
+            ]]]
+      state:
+        - font-size: 15px
+        - font-weight: 600
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+
+  # Server
+  - type: custom:button-card
+    entity: sensor.tomada_servidor_nas_power
+    name: Servidor
+    icon: mdi:server
+    show_state: true
+    state_display: |
+      [[[
+        return Math.round(entity.state) + "W";
+      ]]]
+    styles:
+      card:
+        - height: 55px
+        - border-radius: 18px
+        - padding: 8px
+        - background: |
+            [[[
+              var p = parseFloat(entity.state);
+              if (p > 200) return "var(--red)";
+              if (p > 100) return "var(--yellow)";
+              if (p > 10) return "var(--blue)";
+              return "var(--contrast2)";
+            ]]]
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 26px 1fr
+      icon:
+        - width: 26px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+      name:
+        - font-size: 9px
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast16)";
+            ]]]
+      state:
+        - font-size: 15px
+        - font-weight: 600
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+
+  # Unifi
+  - type: custom:button-card
+    entity: sensor.tomada_ubiquiti_rede_power
+    name: Unifi
+    icon: mdi:router-wireless
+    show_state: true
+    state_display: |
+      [[[
+        return Math.round(entity.state) + "W";
+      ]]]
+    styles:
+      card:
+        - height: 55px
+        - border-radius: 18px
+        - padding: 8px
+        - background: |
+            [[[
+              var p = parseFloat(entity.state);
+              if (p > 100) return "var(--red)";
+              if (p > 50) return "var(--yellow)";
+              if (p > 10) return "var(--blue)";
+              return "var(--contrast2)";
+            ]]]
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 26px 1fr
+      icon:
+        - width: 26px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+      name:
+        - font-size: 9px
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast16)";
+            ]]]
+      state:
+        - font-size: 15px
+        - font-weight: 600
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+
+  # Office
+  - type: custom:button-card
+    entity: sensor.tomada_escritorio_power
+    name: Escritório
+    icon: mdi:laptop
+    show_state: true
+    state_display: |
+      [[[
+        return Math.round(entity.state) + "W";
+      ]]]
+    styles:
+      card:
+        - height: 55px
+        - border-radius: 18px
+        - padding: 8px
+        - background: |
+            [[[
+              var p = parseFloat(entity.state);
+              if (p > 300) return "var(--red)";
+              if (p > 150) return "var(--yellow)";
+              if (p > 10) return "var(--blue)";
+              return "var(--contrast2)";
+            ]]]
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 26px 1fr
+      icon:
+        - width: 26px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+      name:
+        - font-size: 9px
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast16)";
+            ]]]
+      state:
+        - font-size: 15px
+        - font-weight: 600
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+
+  # Oven
+  - type: custom:button-card
+    entity: sensor.shelly_pro_em_1_em0_power_corrigido
+    name: Forno/Placa
+    icon: mdi:toaster-oven
+    show_state: true
+    state_display: |
+      [[[
+        return Math.round(entity.state) + "W";
+      ]]]
+    styles:
+      card:
+        - height: 55px
+        - border-radius: 18px
+        - padding: 8px
+        - background: |
+            [[[
+              var p = parseFloat(entity.state);
+              if (p > 3000) return "var(--red)";
+              if (p > 1000) return "var(--yellow)";
+              if (p > 10) return "var(--blue)";
+              return "var(--contrast2)";
+            ]]]
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 26px 1fr
+      icon:
+        - width: 26px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+      name:
+        - font-size: 9px
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast16)";
+            ]]]
+      state:
+        - font-size: 15px
+        - font-weight: 600
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+
+  # Tesla
+  - type: custom:button-card
+    entity: sensor.shelly_pro_em_1_em1_power
+    name: Tesla
+    icon: mdi:ev-plug-tesla
+    show_state: true
+    state_display: |
+      [[[
+        return Math.round(entity.state) + "W";
+      ]]]
+    styles:
+      card:
+        - height: 55px
+        - border-radius: 18px
+        - padding: 8px
+        - background: |
+            [[[
+              var p = parseFloat(entity.state);
+              if (p > 5000) return "var(--green)";
+              if (p > 1000) return "var(--blue)";
+              if (p > 10) return "var(--yellow)";
+              return "var(--contrast2)";
+            ]]]
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 26px 1fr
+      icon:
+        - width: 26px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+      name:
+        - font-size: 9px
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast16)";
+            ]]]
+      state:
+        - font-size: 15px
+        - font-weight: 600
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+
+  # Living Room
+  - type: custom:button-card
+    entity: sensor.shellyproem50_08f9e0e7ce0c_em1_power
+    name: Sala
+    icon: mdi:sofa
+    show_state: true
+    state_display: |
+      [[[
+        return Math.round(entity.state) + "W";
+      ]]]
+    styles:
+      card:
+        - height: 55px
+        - border-radius: 18px
+        - padding: 8px
+        - background: |
+            [[[
+              var p = parseFloat(entity.state);
+              if (p > 2000) return "var(--red)";
+              if (p > 500) return "var(--yellow)";
+              if (p > 10) return "var(--blue)";
+              return "var(--contrast2)";
+            ]]]
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 26px 1fr
+      icon:
+        - width: 26px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+      name:
+        - font-size: 9px
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast16)";
+            ]]]
+      state:
+        - font-size: 15px
+        - font-weight: 600
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+
+  # Heat Pump
+  - type: custom:button-card
+    entity: sensor.shellyproem50_08f9e0e4f828_em1_power
+    name: Bomba Calor
+    icon: mdi:water-boiler
+    show_state: true
+    state_display: |
+      [[[
+        return Math.round(entity.state) + "W";
+      ]]]
+    styles:
+      card:
+        - height: 55px
+        - border-radius: 18px
+        - padding: 8px
+        - background: |
+            [[[
+              var p = parseFloat(entity.state);
+              if (p > 2000) return "var(--red)";
+              if (p > 800) return "var(--yellow)";
+              if (p > 10) return "var(--blue)";
+              return "var(--contrast2)";
+            ]]]
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 26px 1fr
+      icon:
+        - width: 26px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+      name:
+        - font-size: 9px
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast16)";
+            ]]]
+      state:
+        - font-size: 15px
+        - font-weight: 600
+        - justify-self: start
+        - padding-left: 6px
+        - color: |
+            [[[
+              return parseFloat(entity.state) > 10 ? "var(--black)" : "var(--contrast20)";
+            ]]]
+
+  # ============================================
+  # MONTHLY SUMMARY (Horizontal layout)
+  # ============================================
+
+  # Monthly Day
+  - type: custom:button-card
+    entity: sensor.mensal_kwh_daily
+    name: Ciclo Dia
+    icon: mdi:white-balance-sunny
+    show_state: true
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(0) + " kWh";
+      ]]]
+    styles:
+      card:
+        - height: 60px
+        - background: var(--yellow)
+        - border-radius: 18px
+        - padding: 8px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 28px 1fr
+      icon:
+        - width: 28px
+        - color: var(--black)
+      name:
+        - font-size: 10px
+        - color: var(--black)
+        - opacity: 0.8
+        - justify-self: start
+        - padding-left: 6px
+      state:
+        - font-size: 16px
+        - font-weight: 600
+        - color: var(--black)
+        - justify-self: start
+        - padding-left: 6px
+
+  # Monthly Night
+  - type: custom:button-card
+    entity: sensor.mensal_kwh_nighly
+    name: Ciclo Noite
+    icon: mdi:weather-night
+    show_state: true
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(0) + " kWh";
+      ]]]
+    styles:
+      card:
+        - height: 60px
+        - background: var(--blue)
+        - border-radius: 18px
+        - padding: 8px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 28px 1fr
+      icon:
+        - width: 28px
+        - color: var(--black)
+      name:
+        - font-size: 10px
+        - color: var(--black)
+        - opacity: 0.8
+        - justify-self: start
+        - padding-left: 6px
+      state:
+        - font-size: 16px
+        - font-weight: 600
+        - color: var(--black)
+        - justify-self: start
+        - padding-left: 6px
+
+  # Monthly Total
+  - type: custom:button-card
+    entity: sensor.mensal_kwh_total
+    name: Total Ciclo
+    icon: mdi:chart-line
+    show_state: true
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(0) + " kWh";
+      ]]]
+    styles:
+      card:
+        - height: 60px
+        - background: var(--contrast2)
+        - border-radius: 18px
+        - padding: 8px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 28px 1fr
+      icon:
+        - width: 28px
+      name:
+        - font-size: 10px
+        - opacity: 0.8
+        - justify-self: start
+        - padding-left: 6px
+      state:
+        - font-size: 16px
+        - font-weight: 600
+        - justify-self: start
+        - padding-left: 6px
+
+  # Monthly Cost
+  - type: custom:button-card
+    entity: sensor.edp_valor_mensal_euros
+    name: Custo Ciclo
+    icon: mdi:currency-eur-off
+    show_state: true
+    state_display: |
+      [[[
+        return parseFloat(entity.state).toFixed(2) + " €";
+      ]]]
+    styles:
+      card:
+        - height: 60px
+        - background: var(--purple)
+        - border-radius: 18px
+        - padding: 8px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 28px 1fr
+      icon:
+        - width: 28px
+        - color: var(--black)
+      name:
+        - font-size: 10px
+        - color: var(--black)
+        - opacity: 0.8
+        - justify-self: start
+        - padding-left: 6px
+      state:
+        - font-size: 16px
+        - font-weight: 600
+        - color: var(--black)
+        - justify-self: start
+        - padding-left: 6px

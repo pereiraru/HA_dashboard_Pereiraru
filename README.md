@@ -186,20 +186,62 @@ HA_dashboard_Pereiraru/
         │   ├── ADDON_TEMPLATES.yaml         # 3 new templates to add
         │   └── button_card_templates.yaml   # All 18 templates (standalone)
         │
-        └── Documentation
-            ├── README.md                    # Complete usage guide
-            ├── ALL_TEMPLATES_GUIDE.md       # Template reference
-            ├── IMPLEMENTATION_SUMMARY.md    # Implementation overview
-            ├── TEMPLATE_INTEGRATION_VISUAL.md
-            ├── TEMPLATE_COMPARISON.md
-            ├── TEMPLATES_INSTALL.md
-            ├── INDEX.md                     # Quick card index
-            └── QUICK_START.md               # Fast setup guide
+        ├── EDP Energia Views (3 versions)
+        │   ├── edp_energia_view.yaml              # Full version
+        │   ├── edp_energia_view_compact.yaml      # Compact version
+        │   └── edp_energia_view_ultra_compact.yaml # Ultra compact (70% less scrolling)
+        │
+        └── Documentation (10 guides)
+            ├── README.md                          # Complete usage guide
+            ├── ALL_TEMPLATES_GUIDE.md             # All 18 templates documented
+            ├── TEMPLATE_USAGE_GUIDE.md            # How to use variables in cards ⭐ NEW
+            ├── TEMPLATE_REFERENCE_TABLE.md        # Quick reference table ⭐ NEW
+            ├── IMPLEMENTATION_SUMMARY.md          # Implementation overview
+            ├── TEMPLATE_INTEGRATION_VISUAL.md     # Visual integration guide
+            ├── TEMPLATE_COMPARISON.md             # Template compatibility
+            ├── TEMPLATES_INSTALL.md               # Installation guide
+            ├── TEMPLATES_TO_ADD_NOW.yaml          # 3 templates quick add ⭐ NEW
+            ├── EDP_VIEW_GUIDE.md                  # EDP view documentation ⭐ NEW
+            ├── INDEX.md                           # Quick card index
+            └── QUICK_START.md                     # Fast setup guide
 ```
 
 ---
 
 ## 🚀 Quick Start
+
+### 📊 EDP Energia View (Ready-to-Use!)
+
+We've created **3 versions** of a complete EDP energy monitoring view:
+
+1. **Full Version** (`edp_energia_view.yaml`)
+   - Complete energy dashboard
+   - All features and documentation
+   - ~100 cards with detailed layout
+
+2. **Compact Version** (`edp_energia_view_compact.yaml`)
+   - 40% less scrolling
+   - Tighter spacing and smaller cards
+   - Perfect for desktop
+
+3. **Ultra Compact** (`edp_energia_view_ultra_compact.yaml`) ⭐ **RECOMMENDED**
+   - 70% less scrolling
+   - Icon-only power monitors
+   - Everything fits in ~2 screen heights
+   - Best for mobile and desktop
+
+**Features:**
+- ⚡ Real-time power monitoring with color coding
+- 📊 15-day consumption chart
+- 💰 Cost tracking (daily & monthly)
+- 🔌 8 individual device monitors
+- 🌙 Day/Night tariff tracking
+
+**To use:** Copy any version to your dashboard's raw YAML editor.
+
+See `EDP_VIEW_GUIDE.md` for complete documentation.
+
+---
 
 ### Create Energy Page
 
@@ -309,11 +351,29 @@ These sensors are expected by the Tesla cards:
 
 Comprehensive documentation is available in the `cards and templates/energy_car_cards/` folder:
 
+### 🎯 Getting Started
+- **QUICK_START.md** - Fast setup guide for beginners
 - **README.md** - Complete usage instructions
-- **ALL_TEMPLATES_GUIDE.md** - All 18 templates documented
-- **IMPLEMENTATION_SUMMARY.md** - Implementation overview
-- **QUICK_START.md** - Fast setup guide
-- **INDEX.md** - Quick card reference
+- **INDEX.md** - Quick card reference by category
+
+### 📖 Template Guides
+- **TEMPLATE_USAGE_GUIDE.md** ⭐ **NEW** - Shows exactly where and how to use variables in cards
+- **TEMPLATE_REFERENCE_TABLE.md** ⭐ **NEW** - Quick reference table for all 18 templates
+- **ALL_TEMPLATES_GUIDE.md** - Complete documentation of all templates
+- **TEMPLATES_TO_ADD_NOW.yaml** ⭐ **NEW** - Quick copy/paste for 3 new templates
+
+### 🔧 Implementation Guides
+- **IMPLEMENTATION_SUMMARY.md** - What was created and next steps
+- **TEMPLATE_INTEGRATION_VISUAL.md** - Visual integration guide
+- **TEMPLATE_COMPARISON.md** - Template compatibility analysis
+- **TEMPLATES_INSTALL.md** - Step-by-step installation
+
+### 📊 View Documentation
+- **EDP_VIEW_GUIDE.md** ⭐ **NEW** - Complete EDP Energia view documentation
+  - Color coding system
+  - Power thresholds for each device
+  - Customization options
+  - Mobile vs Desktop layouts
 
 ---
 
