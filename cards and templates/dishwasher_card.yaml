@@ -1,0 +1,343 @@
+type: custom:button-card
+entity: sensor.maquina_lavar_operation_state
+variables:
+  remaining_time: sensor.maquina_lavar_remaining_program_time
+  progress: sensor.maquina_lavar_program_progress
+  program_finished: sensor.maquina_lavar_program_finished
+name: Máquina Loiça
+icon: |
+  [[[
+    var state = entity.state.toLowerCase();
+    var finished = states[variables.program_finished].state;
+    if (finished == 'present') {
+      return 'mdi:dishwasher-alert';
+    } else if (state == 'run' || state == 'active') {
+      return 'mdi:dishwasher';
+    } else if (state == 'pause') {
+      return 'mdi:dishwasher';
+    } else {
+      return 'mdi:dishwasher-off';
+    }
+  ]]]
+show_name: true
+show_icon: true
+show_label: true
+show_state: false
+tap_action:
+  action: more-info
+hold_action:
+  action: more-info
+label: |
+  [[[
+    var state = entity.state;
+    var finished = states[variables.program_finished].state;
+
+    if (finished == 'present') {
+      return 'Terminado';
+    }
+
+    const stateMap = {
+      'inactive': 'Desligado',
+      'ready': 'Pronto',
+      'delayedstart': 'Início Agendado',
+      'run': 'A Lavar',
+      'pause': 'Pausado',
+      'actionrequired': 'Ação Necessária',
+      'finished': 'Terminado',
+      'error': 'Erro',
+      'aborting': 'A Cancelar'
+    };
+    return stateMap[state.toLowerCase()] || state;
+  ]]]
+custom_fields:
+  bar: |
+    [[[
+      var state = entity.state;
+      var finished = states[variables.program_finished].state;
+
+      // Don't show bar if not running
+      if (state.toLowerCase() !== 'run' && state.toLowerCase() !== 'pause' && finished !== 'present') return '';
+
+      // If finished, show full green bar
+      if (finished == 'present') {
+        return '<div><div style="background:var(--green); height: 12px; width:100%; border-radius: 12px;"></div></div>';
+      }
+
+      // Get progress percentage
+      var progressValue = parseFloat(states[variables.progress].state);
+      if (isNaN(progressValue)) progressValue = 0;
+
+      var progress = Math.min(Math.max(progressValue, 5), 95);
+
+      var color = "var(--green)";
+      if (progress < 10) color = "var(--red)";
+      else if (progress < 50) color = "var(--yellow)";
+      else if (progress < 90) color = "var(--orange)";
+
+      return `
+      <div>
+      <div style="background:${color}; height: 12px; width:${progress}%; border-radius: 12px;">
+      </div>
+      </div>`
+    ]]]
+  rem:
+    card:
+      type: custom:button-card
+      entity: sensor.maquina_lavar_operation_state
+      name: |
+        [[[
+          var state = entity.state;
+          var finished = states['sensor.maquina_lavar_program_finished'].state;
+
+          if (finished == 'present') return 'Programa concluído';
+          if (state.toLowerCase() !== 'run' && state.toLowerCase() !== 'pause') return '';
+
+          // Get end time (timestamp sensor)
+          var endTimeStr = states['sensor.maquina_lavar_remaining_program_time'].state;
+          if (!endTimeStr || endTimeStr == 'unavailable' || endTimeStr == 'unknown') return 'A lavar...';
+
+          // Parse timestamp - handle ISO format
+          var endTime = new Date(endTimeStr.replace(' ', 'T'));
+          if (isNaN(endTime.getTime())) return 'A lavar...';
+
+          var now = new Date();
+          var remainingMs = endTime - now;
+
+          if (remainingMs <= 0) return 'Quase terminado...';
+
+          var remainingMinutes = Math.round(remainingMs / 60000);
+          var hours = Math.floor(remainingMinutes / 60);
+          var minutes = remainingMinutes % 60;
+
+          var program = states['select.maquina_lavar_active_program'].state;
+
+          // Clean up program name
+          if (!program || program == 'unknown' || program == 'unavailable') {
+            var programLabel = 'A lavar';
+          } else {
+            var programLabel = program.replace('dishcare_dishwasher_program_', '').replace(/_/g, ' ');
+            programLabel = programLabel.charAt(0).toUpperCase() + programLabel.slice(1);
+          }
+
+          if (hours > 0) {
+            return `${programLabel} • ${hours}h ${minutes}m`;
+          } else {
+            return `${programLabel} • ${minutes}m`;
+          }
+        ]]]
+      show_icon: false
+      styles:
+        card:
+          - width: min
+          - background: none
+          - overflow: visible
+          - box-shadow: none
+          - display: |
+              [[[
+                var state = states['sensor.maquina_lavar_operation_state'].state;
+                var finished = states['sensor.maquina_lavar_program_finished'].state;
+                if (state.toLowerCase() == 'run' || state.toLowerCase() == 'pause' || finished == 'present') {
+                  return 'block';
+                } else {
+                  return 'none';
+                }
+              ]]]
+        name:
+          - font-size: 12px
+          - color: var(--black)
+          - font-weight: 500
+  end:
+    card:
+      type: custom:button-card
+      entity: sensor.maquina_lavar_remaining_program_time
+      show_name: false
+      show_state: false
+      show_label: true
+      label: |
+        [[[
+          // Get end time from timestamp sensor
+          var sensor = states['sensor.maquina_lavar_remaining_program_time'];
+          if (!sensor) return '';
+
+          var endTimeStr = sensor.state;
+          if (!endTimeStr || endTimeStr == 'unavailable' || endTimeStr == 'unknown') return '';
+
+          // Convert to string and parse timestamp
+          endTimeStr = String(endTimeStr);
+
+          // Split by 'T' to get time part: 2025-11-27T13:21:18+00:00
+          var parts = endTimeStr.split('T');
+          if (parts.length < 2) return '';
+
+          // Get time part and extract HH:MM
+          var timePart = parts[1];
+          if (timePart.length < 5) return '';
+
+          return timePart.substring(0, 5);
+        ]]]
+      show_icon: false
+      styles:
+        card:
+          - width: min
+          - padding: 5px
+          - background: none
+          - box-shadow: none
+        label:
+          - font-size: 12px
+          - color: var(--black)
+          - font-weight: 500
+  icon1:
+    card:
+      type: custom:button-card
+      icon: mdi:dishwasher
+      styles:
+        card:
+          - background-color: var(--contrast1)
+          - width: 30px
+          - height: 30px
+        icon:
+          - width: 18px
+          - color: var(--contrast20)
+styles:
+  grid:
+    - grid-template-areas: '". icon1" "l l" "n n" "rem rem" "bar bar" ". end"'
+    - grid-template-rows: 24px 1fr 24px min-content min-content min-content
+    - grid-template-columns: 60% 40%
+  card:
+    - height: 100%
+    - padding: 1rem
+    - background: |
+        [[[
+          var finished = states['sensor.maquina_lavar_program_finished'].state;
+          var state = entity.state.toLowerCase();
+
+          if (finished == 'present') {
+            return 'var(--green)';
+          } else if (state == 'run') {
+            return 'var(--blue)';
+          } else if (state == 'pause') {
+            return 'var(--yellow)';
+          } else if (state == 'inactive' || state == 'ready') {
+            return 'var(--contrast2)';
+          } else {
+            return 'var(--contrast2)';
+          }
+        ]]]
+  img_cell:
+    - position: absolute
+    - top: 20%
+    - left: 40%
+    - overflow: visible
+  icon:
+    - position: absolute
+    - width: 20em
+    - opacity: 20%
+    - color: |
+        [[[
+          var state = entity.state.toLowerCase();
+          if (state == 'inactive' || state == 'ready') {
+            return 'var(--contrast20)';
+          } else {
+            return 'var(--black)';
+          }
+        ]]]
+    - transform: rotate(-20deg)
+    - animation: |
+        [[[
+          var finished = states['sensor.maquina_lavar_program_finished'].state;
+          var state = entity.state.toLowerCase();
+
+          if (finished == 'present') {
+            return 'blink 1.5s linear infinite';
+          } else if (state == 'run') {
+            return 'rotating 2s linear infinite';
+          } else {
+            return 'null';
+          }
+        ]]]
+  label:
+    - text-align: left
+    - font-size: 18px
+    - font-weight: 500
+    - justify-self: start
+    - align-self: end
+    - overflow: visible
+    - color: |
+        [[[
+          var state = entity.state.toLowerCase();
+          if (state == 'inactive' || state == 'ready') {
+            return 'var(--contrast20)';
+          } else {
+            return 'var(--black)';
+          }
+        ]]]
+  name:
+    - text-align: left
+    - font-size: 12px
+    - opacity: 0.7
+    - justify-self: start
+    - align-self: center
+    - overflow: visible
+    - color: |
+        [[[
+          var state = entity.state.toLowerCase();
+          if (state == 'inactive' || state == 'ready') {
+            return 'var(--contrast20)';
+          } else {
+            return 'var(--black)';
+          }
+        ]]]
+  custom_fields:
+    bar:
+      - justify-self: start
+      - width: 100%
+      - height: |
+          [[[
+            var state = entity.state.toLowerCase();
+            var finished = states['sensor.maquina_lavar_program_finished'].state;
+            if (state == 'run' || state == 'pause' || finished == 'present') {
+              return '12px';
+            } else {
+              return '0px';
+            }
+          ]]]
+      - background: var(--contrast1)
+      - border-radius: 24px
+    end:
+      - justify-self: end
+      - align-self: end
+      - height: |
+          [[[
+            var state = entity.state.toLowerCase();
+            var finished = states['sensor.maquina_lavar_program_finished'].state;
+            if (state == 'run' || state == 'pause' || finished == 'present') {
+              return '27px';
+            } else {
+              return '0px';
+            }
+          ]]]
+    rem:
+      - justify-self: start
+      - align-self: end
+      - height: |
+          [[[
+            var state = entity.state.toLowerCase();
+            var finished = states['sensor.maquina_lavar_program_finished'].state;
+            if (state == 'run' || state == 'pause' || finished == 'present') {
+              return '27px';
+            } else {
+              return '0px';
+            }
+          ]]]
+    icon1:
+      - justify-self: end
+      - width: 24px
+      - color: |
+          [[[
+            var state = entity.state.toLowerCase();
+            if (state == 'inactive' || state == 'ready') {
+              return 'var(--contrast20)';
+            } else {
+              return 'var(--black)';
+            }
+          ]]]
